@@ -42,6 +42,21 @@ def deliveries_histogram_by_deliverer():
              nbins=30).update_layout(yaxis_title="Total de Entregadores", 
                                      xaxis_title='Quantidade de Entregas')
 
+def deliverer_deliveries_distrubution_evolution():
+    df_aux = (df.loc[:,['ordered_datetime','id_deliverer','id_delivery']]
+                .groupby([pd.Grouper(key='ordered_datetime', freq='W-MON'), 'id_deliverer'])
+                .count()
+                .reset_index()
+                .sort_values('ordered_datetime')
+                .groupby(pd.Grouper(key='ordered_datetime', freq='W-MON'))
+                .agg(desvio=('id_delivery','std'))
+                .reset_index()
+                .rename(columns={'ordered_datetime':'semana',
+                                 'desvio': 'desvio'}))
+    return (px.line(df_aux, 'semana', 'desvio')
+              .update_layout(yaxis_title='Desvio',
+                             xaxis_title='Semana'))
+
 def top_rated_deliverers():
     #Top 10 entregadores mais bem avaliados
     return (df.loc[:,['id_deliverer', 'deliverer_rating', 'deliverer_name']]
@@ -90,6 +105,21 @@ def deliveries_histogram_by_restaurants():
                         x='total',
                         nbins=30).update_layout(yaxis_title="Total de Restaurantes", 
                                                 xaxis_title='Quantidade de Entregas')
+
+def restaurant_deliveries_distrubution_evolution():
+    df_aux = (df.loc[:,['ordered_datetime','id_restaurant','id_delivery']]
+                .groupby([pd.Grouper(key='ordered_datetime', freq='W-MON'), 'id_restaurant'])
+                .count()
+                .reset_index()
+                .sort_values('ordered_datetime')
+                .groupby(pd.Grouper(key='ordered_datetime', freq='W-MON'))
+                .agg(desvio=('id_delivery','std'))
+                .reset_index()
+                .rename(columns={'ordered_datetime':'semana',
+                                 'desvio': 'desvio'}))
+    return (px.line(df_aux, 'semana', 'desvio')
+              .update_layout(yaxis_title='Desvio',
+                             xaxis_title='Semana'))
 
 def prepare_time_mean_by_restaurant():
     df_aux = (df.loc[df['id_restaurant'] != 31, ['pickup_time','id_restaurant']]

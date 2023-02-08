@@ -20,13 +20,16 @@ with st.container():
     with col2:
         col2.metric('Média de Entregas', '%.2f' % data.delivery_mean_by_deliverer())
     with col3:
-        col3.metric('Maior Idade', data.oldest_deliverer())
+        col3.metric('Menor Idade', data.youngest_deliverer())
     with col4:
-        col4.metric('Menor Idade', data.youngest_deliverer())
+        col4.metric('Maior Idade', data.oldest_deliverer())
     st.markdown("""---""")
 with st.container():
     st.markdown("### Distribuição de Entregadores pela Quantidade de Entregas")
     st.plotly_chart(data.deliveries_histogram_by_deliverer(), use_container_width=True)
+    st.markdown("""---""")
+    st.markdown("### Evolução do Índice de Distribuição das Entregas entre Entregadores")
+    st.plotly_chart(data.deliverer_deliveries_distrubution_evolution(), use_container_width=True)
     st.markdown("""---""")
 with st.container():
     col1, col2 = st.columns(2)
